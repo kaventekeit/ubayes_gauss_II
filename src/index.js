@@ -87,7 +87,7 @@ client.on('messageCreate', async (message) => {
   }
 */
 
-  if (command.length < 2 || command[0] !== '!g') {
+  if (command.length < 2 || command[0] !== '!x') {
     return;
   }
   if (command[1] == 'send') {
