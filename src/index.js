@@ -13,7 +13,7 @@ const Users = require('./models/users');
 const Commands = require('./models/commands');
 const Welcome_Config = require('./models/welcome_config');
 const Remindmes = require('./models/remindmes');
-
+const Roles = require('./models/roles');
 
 const client = new Client({ intents: [ GatewayIntentBits.Guilds, 
                                        GatewayIntentBits.GuildMessages, 
@@ -128,7 +128,7 @@ client.on('messageCreate', async (message) => {
         return;
       case 'roles':
         const all_roles = await Roles.get_all();
-        await channel.send(JSON.stringify(all_roles));
+        await channel.send(JSON.stringify(all_roles).slice(3999));
         return;
       default:
         await channel.send(confused_msg);
