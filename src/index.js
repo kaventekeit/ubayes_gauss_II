@@ -16,6 +16,7 @@ const Remindmes = require('./models/remindmes');
 const Roles = require('./models/roles');
 
 const client = new Client({ intents: [ GatewayIntentBits.Guilds, 
+                                       GatewayIntentBits.GuildMembers,
                                        GatewayIntentBits.GuildMessages, 
                                        GatewayIntentBits.MessageContent, 
                                        GatewayIntentBits.DirectMessages ] });
@@ -116,7 +117,13 @@ client.on('messageCreate', async (message) => {
     switch (data_to_display) {
       case 'users':
         const all_users = await Users.get_all();
-        await channel.send(JSON.stringify(all_users));
+        let msg = String(JSON.stringify(all_users));
+        msg = msg.split('');
+        console.log('array msg:',msg);
+        msg = msg.slice(0,2000);
+        msg = msg.join('');
+        console.log(`MSG: ${msg}`);
+        await channel.send(msg);
         return;
       case 'remindmes':
         const all_remindmes = await Remindmes.get_all();

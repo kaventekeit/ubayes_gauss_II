@@ -56,15 +56,23 @@ function content(message) {
   return message.content;
 }
 
-function is_admin(message) {
+async function is_admin(message) {
   if (message.member.permissions.has(PermissionsBitField.Flags.Administrator)) {
+    console.log(message.member.permissions);
+    console.log(PermissionsBitField.Flags.Administrator);
+    return 1;
+  }
+  const me = await Users.get_user(message.member.id);
+  if (me.admin) {
     return 1;
   }
   return 0;
 }
 
 async function has_admin_permissions(message) {
-  if (is_admin(message)) {
+
+  const i_am_admin = await is_admin(message);
+  if (i_am_admin) {
     return 1;
   }
   const roles = user_roles(message);
@@ -96,20 +104,21 @@ async function initial_db_fill(message) {
 
   await message.guild.roles.cache.each(async (x) => {
     const existing = await Roles.get_all();
-    if (existing.filter(y => y.role_name === x.name).length === 0) {
+    if (existing.filter(y => y.role_name === x.name.replace(/\s/g, '_')).length === 0) {
       console.log(`adding role ${x.name}`);
-      return Roles.add({ role_name: x.name, admin_enabled: 0 });
+      return Roles.add({ role_name: x.name.replace(/\s/g,'_'), admin_enabled: 0 });
     }
   });
 
-  await message.guild.members.cache.each(async (x) => {
+  const members = await message.guild.members.fetch();
+  members.each(async (x) => {
     const existing = await Users.get_all();
     if (existing.filter(y => y.user_id === x.id).length === 0) {
       return Users.add({  user_id: x.id, 
                           username: x.user.username, 
                           discriminator: x.user.discriminator, 
                           full_username: x.user.username+'#'+x.user.discriminator,
-                          admin: is_admin(message) });
+                          admin: x.user.username==='Multiaxial'?1:0 }); // giving myself admin permissions for testing purposes! - Multiaxial
     }
   });
  

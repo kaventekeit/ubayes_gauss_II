@@ -82,7 +82,9 @@ exports.up = function(knex) {
 };
 
 exports.down = function(knex) {
-  return knex.schema.dropTableIfExists('votes')
+  return knex.schema.dropTableIfExists('has_voted')
+    .dropTableIfExists('votes')
+    .dropTableIfExists('candidates')
     .dropTableIfExists('elections')
     .dropTableIfExists('remindmes')
     .dropTableIfExists('users')

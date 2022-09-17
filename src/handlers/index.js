@@ -120,16 +120,12 @@ async function send_handler(client, message) {
     console.log(Array.from(all_channels));
     try {
       const intended_channel = Array.from(all_channels).filter(x => x[1].name === intended_channel_name)[0][1];
+      await intended_channel.send(intended_message);
+      return;
     } catch (err) {
       await channel.send('That channel does not exist.');
       return;
     }
-    if (!intended_channel) {
-      await channel.send('That channel does not exist.');
-      return;
-    }
-    await intended_channel.send(intended_message);
-    return;
   } else if (command.length >= 2) {
     command_data = await Commands.get_by_command_name('send_dm');
     if (!command_data.enabled) {
@@ -187,7 +183,7 @@ async function remindme_handler(client, message) {
   }
 
   const { channel, command } = await extract_info(client, message);
-  let command_data = Commands.get_by_command_name('remindme');
+  let command_data = await Commands.get_by_command_name('remindme');
   if (!command_data.enabled) {
     await channel.send(disabled_msg);
     return;
@@ -260,7 +256,9 @@ async function remindme_handler(client, message) {
 async function admin_handler(client, message) {
   const { channel, command } = await extract_info(client, message); 
 
-  const admin = has_admin_permissions(message);
+  const admin = await has_admin_permissions(message);
+  console.log(admin);
+
   if (!admin) {
     await channel.send(`Sorry, you do not have permission to execute admin commands.`);
     return;
@@ -344,7 +342,7 @@ async function reputation_handler(client, message) {
 
 
     const user_to_search = to_standard_username(client,command[1]);
-    const user = await Users.get_user(user_to_search);
+    const user = await Users.unpicky_get_user(user_to_search);
     if (!user) {
       await channel.send(`Sorry, I couldn't find that user.`);
       return;
@@ -354,7 +352,7 @@ async function reputation_handler(client, message) {
       return;
     }
     let rep_to_add = (give_commands.indexOf(command[0])!==-1)?(parseInt(command[2])):(-parseInt(command[2]))
-    await Users.update(user.username,{ reputation: user.reputation + rep_to_add });
+    await Users.update(user.user_id,{ reputation: user.reputation + rep_to_add });
     await channel.send(`Gave ${rep_to_add} reputation to ${user.username}.`);
     return;
   } else if (command[0] === 'getrep'
