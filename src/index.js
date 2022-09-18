@@ -14,6 +14,7 @@ const Commands = require('./models/commands');
 const Welcome_Config = require('./models/welcome_config');
 const Remindmes = require('./models/remindmes');
 const Roles = require('./models/roles');
+const Elections = require('./models/elections');
 
 const client = new Client({ intents: [ GatewayIntentBits.Guilds, 
                                        GatewayIntentBits.GuildMembers,
@@ -120,7 +121,7 @@ client.on('messageCreate', async (message) => {
         let msg = String(JSON.stringify(all_users));
         msg = msg.split('');
         console.log('array msg:',msg);
-        msg = msg.slice(0,2000);
+        msg = msg.slice(0,1999);
         msg = msg.join('');
         console.log(`MSG: ${msg}`);
         await channel.send(msg);
@@ -135,7 +136,11 @@ client.on('messageCreate', async (message) => {
         return;
       case 'roles':
         const all_roles = await Roles.get_all();
-        await channel.send(JSON.stringify(all_roles).slice(3999));
+        await channel.send(JSON.stringify(all_roles).slice(0,1999));
+        return;
+      case 'elections':
+        const all_elections = await Elections.get_all();
+        await channel.send(JSON.stringify(all_elections).slice(0,1999));
         return;
       default:
         await channel.send(confused_msg);

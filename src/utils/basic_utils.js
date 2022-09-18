@@ -1,4 +1,4 @@
-function to_epoch_ms(date) {
+function date_to_epoch_ms(date) {
   function days_in_years(year) {
     return ( (year-1970) * 365 + Math.floor( (year-1971) / 4 ) );
   }
@@ -61,5 +61,5 @@ function to_epoch_ms(date) {
 }
 
 module.exports = {
-  to_epoch_ms
+  date_to_epoch_ms
 }

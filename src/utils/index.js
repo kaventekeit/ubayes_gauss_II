@@ -3,7 +3,7 @@ const Users = require('../models/users');
 const Roles = require('../models/roles');
 const Remindmes = require('../models/remindmes');
 
-const { to_epoch_ms } = require('./basic_utils');
+const { date_to_epoch_ms } = require('./basic_utils');
 
 const {
    username,
@@ -54,7 +54,7 @@ async function churn_through_remindmes(client) {
   for (let remindme of outstanding_remindmes) {
     user = client.users.cache.get(remindme.user_id);
     try {
-      await user.send(`Reminder: [ " ${remindme.message} " ]`);
+      await user.send(`Reminder: [ ${remindme.message} ]`);
       await Remindmes.remove_by_id(remindme.id);
     } catch (err) {
       console.error(err);

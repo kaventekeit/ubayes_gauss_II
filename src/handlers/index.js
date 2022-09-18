@@ -46,7 +46,7 @@ const {
   to_date_and_msg
 } = require('../utils');
 
-const { to_epoch_ms } = require('../utils/basic_utils');
+const { date_to_epoch_ms } = require('../utils/basic_utils');
 
 const disabled_msg = 'That command is disabled.';
 const date_format_explanation = "Please format dates like: 'YYYY-MM-DDTHH:MM:SS'.";
@@ -75,10 +75,10 @@ async function election_handler(client, message) {
         create an entry for the *user* in the 'has_voted' table that is set to 0
     */
     const role_name = command[2];
-    let start_datetime = new Date(command[4]).toString();  
-    const end_datetime = new Date(command[5]).toString();
-    if (start_datetime === 'Invalid Date'
-        || end_datetime === 'Invalid Date') {
+    let start_datetime = new Date(command[4]);  
+    const end_datetime = new Date(command[5]);
+    if (start_datetime.toString() === 'Invalid Date'
+        || end_datetime.toString() === 'Invalid Date') {
       await channel.send(date_format_explanation);  
       return;
     }
@@ -90,8 +90,8 @@ async function election_handler(client, message) {
     const new_election = {
       role_name,
       how_many_of_these_are_we_electing,
-      start_datetime,
-      end_datetime,
+      start_datetime: date_to_epoch_ms(start_datetime),
+      end_datetime: date_to_epoch_ms(end_datetime),
     };
     const election_id_array = await Elections.insert(new_election);
     const candidates_list = command.slice(6);
@@ -200,7 +200,7 @@ async function remindme_handler(client, message) {
     const user_id = message.author.id;
     const date_str = new Date(ms).toString();
     await Remindmes.insert({ date: ms, message: message_text, user_id: user_id });
-    await message.author.send(`Reminder set for ${date_str}: [ " ${message_text} " ]`);
+    await channel.send(`Reminder set for ${date_str}: [ ${message_text} ]`);
     return;
   }
 
@@ -215,11 +215,11 @@ async function remindme_handler(client, message) {
   /* let unit_regex = /^((second?s)|(minute?s)|(hour?s)|(day?s)|(week?s)|(month?s)|(year?s))$/i; */
 
   /* our date object to ms-since-epoch utility: */
-  /* to_epoch_ms(date_obj) => # ms */
+  /* date_to_epoch_ms(date_obj) => # ms */
 
   const base_date = new Date();
   let target_date;
-  const base_ms = to_epoch_ms(base_date);
+  const base_ms = date_to_epoch_ms(base_date);
   let target_ms = base_ms;
 
   const unit = unit_regex.exec(command[2]);
@@ -228,7 +228,7 @@ async function remindme_handler(client, message) {
     const when_str = command[1];
     try {
       const when = new Date(when_str);
-      await insert_and_announce(to_epoch_ms(when), message, command.slice(2).join(' '), channel);
+      await insert_and_announce(date_to_epoch_ms(when), message, command.slice(2).join(' '), channel);
       return;
     } catch (err) {
       await channel.send('Sorry, I could not parse that date.');
@@ -430,7 +430,7 @@ async function time_handler(client, message) {
     }
     const offset_in_ms = get_offset_in_minutes(command.length===2?command[1]:command[2]) * 60 * 1000;
     const now_date = new Date();
-    const utc_mils = to_epoch_ms(now_date);
+    const utc_mils = date_to_epoch_ms(now_date);
     const offset_mils = utc_mils + offset_in_ms;
     const offset_date = new Date(offset_mils).toString();
     await channel.send(offset_date);
@@ -477,7 +477,7 @@ async function time_handler(client, message) {
         }
         try {
           let date_to_convert = new Date(command[2]);
-          date_to_convert = to_epoch_ms(date_to_convert);
+          date_to_convert = date_to_epoch_ms(date_to_convert);
           const new_date = new Date(date_to_convert).toLocaleString('en-US', { timeZone: target_timezone });  // remember, here we're assuming we're STARTING from UTC, or at least a TZ the user specified **within** their date so we have the correct ms info in our Date object
           await channel.send(new_date); 
           return;
@@ -495,7 +495,7 @@ async function time_handler(client, message) {
         base_offset *= (60 * 1000);
         try {
           let date_to_convert = new Date(command[2]);
-          date_to_convert = to_epoch_ms(date_to_convert);
+          date_to_convert = date_to_epoch_ms(date_to_convert);
           date_to_convert -= base_offset;                     // we make our ms info for our base date include info about the base timezone!
           const target_timezone = command[5];
           let valid_timezone_tester = get_offset_in_minutes(target_timezone);
