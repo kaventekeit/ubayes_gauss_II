@@ -1,12 +1,12 @@
 const db = require('../config/db_config');
 
 function get_all() {
-  return db('elections');
+  return db('candidates');
 }
 
-function insert(election) {
-  return db('elections')
-    .insert(election);
+function insert(candidate) {
+  return db('candidates')
+    .insert(candidate);
 }
 
 module.exports = {

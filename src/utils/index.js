@@ -63,10 +63,23 @@ async function churn_through_remindmes(client) {
   return;
 }
 
+function churn_through_elections(client) {
+}
+
+function refresh_users_and_roles(client) {
+}
+
+async function run_background_routine(client) {
+  refresh_users_and_roles(client);
+  churn_through_elections(client);
+  churn_through_remindmes(client);
+}
+
+
 let schedule_checker;
 function check_schedule(client) {
   if (!schedule_checker) {
-    schedule_checker = setInterval(() => churn_through_remindmes(client), 5000);
+    schedule_checker = setInterval(() => run_background_routine(client), 5000);
   }
 }
 

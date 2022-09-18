@@ -18,6 +18,8 @@ const Users = require('../models/users');
 const Remindmes = require('../models/remindmes');
 const Roles = require('../models/roles');
 const Commands = require('../models/commands');
+const Elections = require('../models/elections');
+const Candidates = require('../models/candidates');
 
 const {
    user_id,
@@ -48,6 +50,9 @@ const { to_epoch_ms } = require('../utils/basic_utils');
 
 const disabled_msg = 'That command is disabled.';
 const date_format_explanation = "Please format dates like: 'YYYY-MM-DDTHH:MM:SS'.";
+const election_create_command_usage_explanation = `election create command usage: 
+      election create <title_name> <how_many_of_these_are_we_electing> <start_datetime> <end_datetime> <candidate_names . . . >
+      `; 
 
 async function election_handler(client, message) {
   const { channel, command } = await extract_info(client, message); 
@@ -60,7 +65,7 @@ async function election_handler(client, message) {
     }
     /* expected structure of `election create` command: */
     /* `election create <title_name> <how_many_of_these_are_we_electing> <start_date> <end_date> <candidate_names . . . >` */
-    /* This should create an election with the specified title, start and end dates, [BEGUN] status, and list of candidates 
+    /* This should create an election with the specified title, start and end dates, and list of candidates 
         [keyed by a foreign key to the election_id] in the database and return the election_id 
         we should have running processes in main that check to see
         [A] whether any existing elections' END dates are passed, and, if so, have Gauss DM everyone notifying them that 
@@ -70,13 +75,30 @@ async function election_handler(client, message) {
         create an entry for the *user* in the 'has_voted' table that is set to 0
     */
     const role_name = command[2];
-    let start_date = new Date(command[4]).toString();  
-    const end_date = new Date(command[5]).toString();
-    if (start_date === 'Invalid Date'
-        || end_date === 'Invalid Date') {
+    let start_datetime = new Date(command[4]).toString();  
+    const end_datetime = new Date(command[5]).toString();
+    if (start_datetime === 'Invalid Date'
+        || end_datetime === 'Invalid Date') {
       await channel.send(date_format_explanation);  
       return;
     }
+    const how_many_of_these_are_we_electing = Number(command[3]);
+    if (how_many_of_these_are_we_electing === NaN) {
+      await channel.send(election_create_command_usage_explanation);
+      return;
+    }
+    const new_election = {
+      role_name,
+      how_many_of_these_are_we_electing,
+      start_datetime,
+      end_datetime,
+    };
+    const election_id_array = await Elections.insert(new_election);
+    const candidates_list = command.slice(6);
+    for (let i = 0; i < candidates_list.length; i++) {
+      await Candidates.insert({ election_id: election_id_array[0], candidate_name: candidates_list[i] });
+    }
+    await channel.send(`Created election for ${role_name}, scheduled to start on ${start_datetime} and end on ${end_datetime}.`);
     return;
   } else if (command[1] === 'vote') {
     command_data = await Commands.get_by_command_name('election_vote');
