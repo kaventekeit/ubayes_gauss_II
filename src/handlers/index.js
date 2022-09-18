@@ -79,12 +79,14 @@ async function election_handler(client, message) {
     const end_datetime = new Date(command[5]);
     if (start_datetime.toString() === 'Invalid Date'
         || end_datetime.toString() === 'Invalid Date') {
+      await channel.send(election_create_command_usage_explanation);
       await channel.send(date_format_explanation);  
       return;
     }
     const how_many_of_these_are_we_electing = Number(command[3]);
     if (how_many_of_these_are_we_electing === NaN) {
       await channel.send(election_create_command_usage_explanation);
+      await channel.send(date_format_explanation);
       return;
     }
     const new_election = {
