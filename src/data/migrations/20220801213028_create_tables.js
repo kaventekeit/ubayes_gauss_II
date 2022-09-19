@@ -43,7 +43,9 @@ exports.up = function(knex) {
     tbl.varchar('user_id')
       .notNullable()
       .references('user_id')
-      .inTable('users');
+      .inTable('users')
+      .onUpdate('CASCADE')
+      .onDelete('CASCADE');
   })
   .createTable('elections', tbl => {
     tbl.increments();
@@ -55,17 +57,23 @@ exports.up = function(knex) {
       .notNullable();
     tbl.integer('end_datetime')
       .notNullable();
+    tbl.integer('begun') // FOR STARTING ONLY ONCE
+      .notNullable();
   })
   .createTable('candidates', tbl => {
     tbl.varchar('candidate_name'); // the same candidate may be up for multiple elections
     tbl.integer('election_id')
       .references('id')
-      .inTable('elections');
+      .inTable('elections')
+      .onUpdate('CASCADE')
+      .onDelete('CASCADE');
   })
   .createTable('votes', tbl => {
     tbl.varchar('election')
       .references('id')
-      .inTable('elections');
+      .inTable('elections')
+      .onUpdate('CASCADE')
+      .onDelete('CASCADE');
     tbl.integer('choice')
       .notNullable();
   })
@@ -73,7 +81,9 @@ exports.up = function(knex) {
     tbl.integer('user_id');
     tbl.integer('election_id')
       .references('id')
-      .inTable('elections');
+      .inTable('elections')
+      .onUpdate('CASCADE')
+      .onDelete('CASCADE');
     tbl.integer('has_voted')
       .notNullable()
       .defaultTo(0);

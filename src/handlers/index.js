@@ -94,6 +94,7 @@ async function election_handler(client, message) {
       how_many_of_these_are_we_electing,
       start_datetime: date_to_epoch_ms(start_datetime),
       end_datetime: date_to_epoch_ms(end_datetime),
+      begun: 0,
     };
     const election_id_array = await Elections.insert(new_election);
     const candidates_list = command.slice(6);

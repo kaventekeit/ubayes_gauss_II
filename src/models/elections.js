@@ -40,6 +40,12 @@ function insert(election) {
     .insert(election);
 }
 
+function update(election_id, election) {
+  return db('elections')
+    .where({ id: election_id })
+    .update(election);
+}
+
 function remove_by_id(election_id) {
   return db('elections')
     .where({ id: election_id })
@@ -51,5 +57,6 @@ module.exports = {
   get_live,
   get_dead,
   insert,
+  update,
   remove_by_id
 };

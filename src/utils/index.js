@@ -66,12 +66,23 @@ async function churn_through_remindmes(client) {
 }
 
 async function churn_through_elections(client) {
-  const outstanding_live_elections = await Elections.get_live();
+  let outstanding_live_elections = await Elections.get_live();
+  outstanding_live_elections = outstanding_live_elections.filter(election => election.begun === 0);
+
   console.log('V OUTSTANDING LIVE ELECTIONS V');
   console.log(outstanding_live_elections);
+
+  for (let election of outstanding_live_elections) {
+    await Elections.update(election.id, { ...election, begun: 1 });
+  }
+
   const outstanding_dead_elections = await Elections.get_dead();
   console.log('V OUTSTANDING DEAD ELECTIONS V');
   console.log(outstanding_dead_elections);
+
+  for (let election of outstanding_dead_elections) {
+    await Elections.remove_by_id(election.id);    
+  }
 }
 
 function refresh_users_and_roles(client) {
