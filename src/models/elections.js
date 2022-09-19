@@ -5,19 +5,34 @@ function get_all() {
   return db('elections');
 }
 
-function get_outstanding() {
+function get_live() {
   return db('elections')
     .then(all => {
       return all.filter(x => {
         let now_date = new Date();
         now = date_to_epoch_ms(now_date);
-        if (now >= x.date) {
+        if (now >= x.start_datetime) {
           return true;
         } else {
           return false;
         }
     });
   });
+}
+
+function get_dead() {
+  return db('elections')
+    .then(all => {
+      return all.filter(x => {
+        let now_date = new Date();
+        now = date_to_epoch_ms(now_date); 
+        if (now >= x.end_datetime) {
+          return true;
+        } else {
+          return false;
+        }
+      })
+    });
 }
 
 function insert(election) {
@@ -33,7 +48,8 @@ function remove_by_id(election_id) {
 
 module.exports = {
   get_all,
-  get_outstanding,
+  get_live,
+  get_dead,
   insert,
   remove_by_id
 };

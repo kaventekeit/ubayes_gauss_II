@@ -2,6 +2,7 @@ const { PermissionsBitField } = require('discord.js');
 const Users = require('../models/users');
 const Roles = require('../models/roles');
 const Remindmes = require('../models/remindmes');
+const Elections = require('../models/elections');
 
 const { date_to_epoch_ms } = require('./basic_utils');
 
@@ -49,6 +50,7 @@ async function has_admin(member) {
 
 async function churn_through_remindmes(client) { 
   const outstanding_remindmes = await Remindmes.get_outstanding();
+  console.log('V OUTSTANDING REMINDMES V');
   console.log(outstanding_remindmes);
   let user;
   for (let remindme of outstanding_remindmes) {
@@ -63,7 +65,13 @@ async function churn_through_remindmes(client) {
   return;
 }
 
-function churn_through_elections(client) {
+async function churn_through_elections(client) {
+  const outstanding_live_elections = await Elections.get_live();
+  console.log('V OUTSTANDING LIVE ELECTIONS V');
+  console.log(outstanding_live_elections);
+  const outstanding_dead_elections = await Elections.get_dead();
+  console.log('V OUTSTANDING DEAD ELECTIONS V');
+  console.log(outstanding_dead_elections);
 }
 
 function refresh_users_and_roles(client) {
