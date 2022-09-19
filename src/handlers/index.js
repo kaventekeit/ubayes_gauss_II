@@ -181,7 +181,7 @@ async function send_handler(client, message) {
       console.log(`INTENDED USER: ${intended_user}`);
       intended_message = command.slice(2).join(' ');
     }
-    const user_settings = await Users.get_user(intended_user);
+    const user_settings = await Users.get_by_id(intended_user);
     if (!user_settings) {
       await channel.send("That user does not exist.");
       return;
@@ -388,7 +388,7 @@ async function reputation_handler(client, message) {
       return;
     }
     const user_to_search = to_standard_username(client,command[1]);
-    const user = await Users.get_user(user_to_search);
+    const user = await Users.get_by_id(user_to_search);
     if (!user) {
       await channel.send(`Sorry, I couldn't find that user.`);
       return;

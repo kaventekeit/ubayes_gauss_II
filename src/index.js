@@ -68,7 +68,7 @@ client.on('messageCreate', async (message) => {
   }
   const message_user_id = user_id(message);
   console.log(`message_user_id: ${message_user_id}`);
-  const user = await Users.get_user(message_user_id);
+  const user = await Users.get_by_id(message_user_id);
   console.log('Found user:');
   console.log(user);
   const admin = is_admin(message);
@@ -86,7 +86,9 @@ client.on('messageCreate', async (message) => {
     console.log(message.mentions.users);
     message.mentions.users.each(async(user) => {
       const member = await message.guild.members.fetch(user.id);
-      await channel.send(`I should be awarding points to ${member.displayName}!`);
+      const existing_user = await Users.get_by_id(member.id);
+      await Users.update(member.id, { reputation: existing_user.reputation + 1 });
+      await channel.send(`Awarded 1 Bayes point to ${member.displayName}`);
     });
   }
 

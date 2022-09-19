@@ -4,7 +4,7 @@ function get_all() {
   return db('users');
 }
 
-function get_user(user_id) {
+function get_by_id(user_id) {
   return db('users')
     .where({ user_id })
     .first();
@@ -68,7 +68,7 @@ function remove_by_id(user_id) {
 
 module.exports = {
   get_all,
-  get_user,
+  get_by_id,
   add,
   update,
   unpicky_get_user,

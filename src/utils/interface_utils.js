@@ -62,7 +62,7 @@ async function is_admin(message) {
     console.log(PermissionsBitField.Flags.Administrator);
     return 1;
   }
-  const me = await Users.get_user(message.member.id);
+  const me = await Users.get_by_id(message.member.id);
   if (me.admin) {
     return 1;
   }
