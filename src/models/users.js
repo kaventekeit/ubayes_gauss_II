@@ -36,6 +36,14 @@ async function unpicky_get_user(user_identifier) {
       .where({ discriminator: user_identifier })
       .first();
   }
+  user = await db('users')
+    .where({ display_name: user_identifier })
+    .first();
+  if (user) {
+    return db('users')
+      .where({ display_name: user_identifier })
+      .first();
+  }
   return db('users')
     .where({ full_username: user_identifier })
     .first();
@@ -52,10 +60,17 @@ function update(user_id,user) {
     .update(user);
 }
 
+function remove_by_id(user_id) {
+  return db('users')
+    .where({ user_id })
+    .del();
+}
+
 module.exports = {
   get_all,
   get_user,
   add,
   update,
-  unpicky_get_user
+  unpicky_get_user,
+  remove_by_id
 };

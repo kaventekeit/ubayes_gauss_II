@@ -26,6 +26,8 @@ exports.up = function(knex) {
       .notNullable();
     tbl.varchar('full_username')
       .notNullable();
+    tbl.varchar('display_name')
+      .notNullable();
     tbl.integer('dms_enabled')
       .notNullable()
       .defaultTo(1);

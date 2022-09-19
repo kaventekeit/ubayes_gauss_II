@@ -85,20 +85,80 @@ async function churn_through_elections(client) {
   }
 }
 
-function refresh_users_and_roles(client) {
+async function refresh_users_and_roles(client, guild) {
+
+  /* for roles all we need to do is add new roles and remove old ones */
+
+  let existing = await Roles.get_all();
+  const roles = await guild.roles.fetch();
+
+  for (let i = 0; i < existing.length; i++) {
+    if (roles.filter(x => x.name.replace(/\s/g, '_').replace(/@/g, '') === existing[i].role_name).length === 0) {
+      await Roles.remove_by_role_name(existing[i].role_name);
+    }
+  }
+
+  roles.each(async (x) => {
+    const existing = await Roles.get_all();
+    if (existing.filter(y => y.role_name === x.name.replace(/\s/g, '_').replace(/@/g, '')).length === 0) {
+      return Roles.add({ role_name: x.name.replace(/\s/g, '_').replace(/@/g, ''), admin_enabled: 0 });
+    }
+  })
+
+  console.log(`All roles updated!`);
+
+  const members = await guild.members.fetch();
+
+  /* 
+  
+   but for members, we have to: 
+    [1] remove members from our db who have left the server
+    [2] go through each existing member ID and:
+      - add it if we haven't
+      - update everything associated with the ID to make sure the db reflects the ID's current attributes in the server
+  */
+
+  existing = await Users.get_all();
+
+  for (let i = 0; i < existing.length; i++) {
+    if (members.filter(x => x.user_id === existing[i].id).length === 0) {
+      await Users.remove_by_id(existing[i].id);
+    }
+  }
+
+  members.each(async (x) => {
+    const existing = await Users.get_all();
+    if (existing.filter(y => y.user_id === x.id).length == 0) {
+      return Users.add({ user_id: x.id,
+                        username: x.user.username.replace(/\s/g, '_'),
+                        discrmiminator: x.user.discriminator,
+                        full_username: x.user.username.replace(/\s/g, '_')+'#'+x.user.discriminator,
+                        display_name: x.displayName.replace(/\s/g, '_'),
+                        admin: x.user.username==='Multiaxial'?1:0 }); // giving myself admin permissions for testing purposes! - Multiaxial      
+    } else {
+      return Users.update(x.id,{  username: x.user.username.replace(/\s/g, '_'),
+                                  discriminator: x.user.discriminator,
+                                  full_username: x.user.username.replace(/\s/g, '_')+'#'+x.user.discriminator,
+                                  display_name: x.displayName.replace(/\s/g, '_'),
+      });
+    }
+  });
+
+  console.log(`All members updated!`); 
+  
 }
 
-async function run_background_routine(client) {
-  refresh_users_and_roles(client);
+async function run_background_routine(client, guild) {
+  refresh_users_and_roles(client, guild);
   churn_through_elections(client);
   churn_through_remindmes(client);
 }
 
 
 let schedule_checker;
-function check_schedule(client) {
+function check_schedule(client, guild) {
   if (!schedule_checker) {
-    schedule_checker = setInterval(() => run_background_routine(client), 5000);
+    schedule_checker = setInterval(() => run_background_routine(client, guild), 5000);
   }
 }
 

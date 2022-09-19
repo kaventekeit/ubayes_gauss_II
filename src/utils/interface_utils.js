@@ -102,11 +102,12 @@ async function initial_db_fill(message) {
   const initial_channel = message.guild.channels.cache.first().name;
   await Welcome_Config.change({ welcome_channel: initial_channel, welcome_message });
 
-  await message.guild.roles.cache.each(async (x) => {
+  const roles = await message.guild.roles.fetch();
+  roles.each(async (x) => {
     const existing = await Roles.get_all();
-    if (existing.filter(y => y.role_name === x.name.replace(/\s/g, '_')).length === 0) {
+    if (existing.filter(y => y.role_name === x.name.replace(/\s/g, '_').replace(/@/g, '')).length === 0) {
       console.log(`adding role ${x.name}`);
-      return Roles.add({ role_name: x.name.replace(/\s/g,'_'), admin_enabled: 0 });
+      return Roles.add({ role_name: x.name.replace(/\s/g,'_').replace(/@/g, ''), admin_enabled: 0 });
     }
   });
 
@@ -115,12 +116,15 @@ async function initial_db_fill(message) {
     const existing = await Users.get_all();
     if (existing.filter(y => y.user_id === x.id).length === 0) {
       return Users.add({  user_id: x.id, 
-                          username: x.user.username, 
+                          username: x.user.username.replace(/\s/g, '_'), 
                           discriminator: x.user.discriminator, 
-                          full_username: x.user.username+'#'+x.user.discriminator,
+                          full_username: x.user.username.replace(/\s/g, '_')+'#'+x.user.discriminator,
+                          display_name: x.displayName.replace(/\s/g, '_'),
                           admin: x.user.username==='Multiaxial'?1:0 }); // giving myself admin permissions for testing purposes! - Multiaxial
     }
   });
+
+  return message.guild;
  
 }
 

@@ -31,11 +31,18 @@ function update(role_name,role) {
     .update(role);
 }
 
+function remove_by_role_name(role_name) {
+  return db('roles')
+    .where({ role_name })
+    .del();
+}
+
 module.exports = {
   get_all,
   get_by_role_name,
   get_all_admin_disabled,
   get_all_admin_enabled,
   add,
-  update
+  update,
+  remove_by_role_name
 }

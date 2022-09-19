@@ -51,15 +51,16 @@ const {
 let initial_db_fill_done = 0;
 
 client.once('ready', async () => {
-  clearInterval(schedule_checker);
-  schedule_checker = undefined;
 	console.log(`We have logged in as ${client.user.username+'#'+client.user.discriminator}`);
-  check_schedule(client);
 });
 
 client.on('messageCreate', async (message) => {
-  if (!initial_db_fill_done) {
-    await initial_db_fill(message); 
+  if (message.author.id != client.user.id && !initial_db_fill_done) {
+    const guild = await initial_db_fill(message);
+    clearInterval(schedule_checker);
+    schedule_checker = undefined;
+    check_schedule(client, guild);
+    await message.channel.send(`I have initialized with data from ${guild}!`);
     initial_db_fill_done = 1;
   }
   if (message.author.id === client.user.id) {
@@ -78,6 +79,15 @@ client.on('messageCreate', async (message) => {
   const welcome_regex = /mee{0,1}t Gauss/i;
   if (welcome_regex.test(message.content)) {
     await channel.send(welcome_message);
+  }
+
+  const thank_you_regex = /xhank(s| you)/i;
+  if (thank_you_regex.test(message.content)) {
+    console.log(message.mentions.users);
+    message.mentions.users.each(async(user) => {
+      const member = await message.guild.members.fetch(user.id);
+      await channel.send(`I should be awarding points to ${member.displayName}!`);
+    });
   }
 
 
@@ -112,6 +122,9 @@ client.on('messageCreate', async (message) => {
     return;
   } else if (misc.indexOf(command[1]) !== -1) {
     await misc_handler(client, message);
+    return;
+  } else if (command[1] === 'chat') {
+    await channel.send('And how does that make you feel?');
     return;
   } else if (command[1] === 'list') {
     const data_to_display = command[2];
