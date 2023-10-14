@@ -1,3 +1,6 @@
+./src/package.json
+./src/package-lock.json
+./src/node-modules/*
 config.json
 index.db
 
