@@ -15,12 +15,17 @@ const Welcome_Config = require('./models/welcome_config');
 const Remindmes = require('./models/remindmes');
 const Roles = require('./models/roles');
 const Elections = require('./models/elections');
+const Candidates = require('./models/candidates');
+const Has_Voted = require('./models/has_voted');
+const Audit_Log_Entries = require('./models/audit_log_entries');
 
 const client = new Client({ intents: [ GatewayIntentBits.Guilds, 
                                        GatewayIntentBits.GuildMembers,
                                        GatewayIntentBits.GuildMessages, 
                                        GatewayIntentBits.MessageContent, 
-                                       GatewayIntentBits.DirectMessages ] });
+                                       GatewayIntentBits.DirectMessages,
+																			 GatewayIntentBits.GuildMessageReactions,
+																			 GatewayIntentBits.DirectMessageReactions ] });
 
 const { welcome_message } = require('./config/default_welcome_message');
 
@@ -47,6 +52,15 @@ const {
   check_schedule,
   has_admin
 } = require('./utils');
+
+/*
+
+		TODO:
+
+			Currently if a user tries to use a command in DMs, we crash with an error
+			about some admin permissions thing being null. Figure out how to fix this.
+
+*/
 
 let initial_db_fill_done = 0;
 
@@ -157,6 +171,18 @@ client.on('messageCreate', async (message) => {
         const all_elections = await Elections.get_all();
         await channel.send(JSON.stringify(all_elections).slice(0,1999));
         return;
+			case 'candidates':
+				const all_candidates = await Candidates.get_all();
+				await channel.send(JSON.stringify(all_candidates));
+				return;
+			case 'logs':
+				const audit_log_entries = await Audit_Log_Entries.get_all();
+				await channel.send(JSON.stringify(audit_log_entries));
+				return;	
+			case 'voters':
+				const has_voted = await Has_Voted.get_all();	
+				await channel.send(JSON.stringify(has_voted));
+				return;
       default:
         await channel.send(confused_msg);
         return;

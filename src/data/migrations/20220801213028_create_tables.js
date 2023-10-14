@@ -50,39 +50,35 @@ exports.up = function(knex) {
       .onDelete('CASCADE');
   })
   .createTable('elections', tbl => {
-    tbl.increments();
     tbl.varchar('role_name')
-      .notNullable();
+			.primary();
     tbl.varchar('how_many_of_these_are_we_electing')
       .notNullable();
     tbl.integer('start_datetime')
       .notNullable();
     tbl.integer('end_datetime')
       .notNullable();
-    tbl.integer('begun') // FOR STARTING ONLY ONCE
+    tbl.integer('begun') // FOR STARTING ONLY ONCE [ WHAT DID YOU MEAN PAST SELF ]
       .notNullable();
+		tbl.integer('hash')
+			.notNullable();
   })
   .createTable('candidates', tbl => {
+		tbl.increments();
+    tbl.varchar('role_name')
+      .references('role_name')
+      .inTable('elections')
+      .onUpdate('CASCADE')
+      .onDelete('CASCADE');
     tbl.varchar('candidate_name'); // the same candidate may be up for multiple elections
-    tbl.integer('election_id')
-      .references('id')
-      .inTable('elections')
-      .onUpdate('CASCADE')
-      .onDelete('CASCADE');
-  })
-  .createTable('votes', tbl => {
-    tbl.varchar('election')
-      .references('id')
-      .inTable('elections')
-      .onUpdate('CASCADE')
-      .onDelete('CASCADE');
-    tbl.integer('choice')
-      .notNullable();
+		tbl.integer('votes')
+			.notNullable()
+			.defaultTo(0);
   })
   .createTable('has_voted', tbl => {
     tbl.integer('user_id');
-    tbl.integer('election_id')
-      .references('id')
+    tbl.varchar('election_id')
+      .references('role_name')
       .inTable('elections')
       .onUpdate('CASCADE')
       .onDelete('CASCADE');
@@ -91,11 +87,23 @@ exports.up = function(knex) {
       .defaultTo(0);
     tbl.primary(['user_id', 'election_id']);
   })
+	.createTable('audit_log_entries', tbl => {
+		tbl.increments();
+		tbl.varchar('election_id')
+			.references('role_name')
+			.inTable('elections')
+			.onUpdate('CASCADE')
+			.onDelete('CASCADE');
+		tbl.integer('previous_hash');
+		tbl.varchar('plaintext');
+		tbl.integer('new_hash')
+			.notNullable();
+	})
 };
 
 exports.down = function(knex) {
-  return knex.schema.dropTableIfExists('has_voted')
-    .dropTableIfExists('votes')
+  return knex.schema.dropTableIfExists('audit_log_entries')
+		.dropTableIfExists('has_voted')
     .dropTableIfExists('candidates')
     .dropTableIfExists('elections')
     .dropTableIfExists('remindmes')

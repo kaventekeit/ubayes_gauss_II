@@ -5,6 +5,11 @@ function get_all() {
   return db('elections');
 }
 
+function get_by_role_name(role_name) {
+	return db('elections')
+					.where({ role_name });
+}
+
 function get_live() {
   return db('elections')
     .then(all => {
@@ -40,23 +45,24 @@ function insert(election) {
     .insert(election);
 }
 
-function update(election_id, election) {
+function update(role_name, election) {
   return db('elections')
-    .where({ id: election_id })
+    .where({ role_name })
     .update(election);
 }
 
-function remove_by_id(election_id) {
+function remove_by_role_name(role_name) {
   return db('elections')
-    .where({ id: election_id })
+    .where({ role_name })
     .del();
 }
 
 module.exports = {
   get_all,
+	get_by_role_name,
   get_live,
   get_dead,
   insert,
   update,
-  remove_by_id
+  remove_by_role_name
 };

@@ -3,6 +3,9 @@ const Users = require('../models/users');
 const Roles = require('../models/roles');
 const Remindmes = require('../models/remindmes');
 const Elections = require('../models/elections');
+const Audit_Log_Entries = require('../models/audit_log_entries');
+
+const { createHash } = require('node:crypto');
 
 const { date_to_epoch_ms } = require('./basic_utils');
 
@@ -28,6 +31,7 @@ const reputation = ['giverep',
                     'takereputation',
                     'give',
                     'take',
+										'thanks',
                     'leaderboard',
                     'getrep',
                     'get'];
@@ -65,7 +69,16 @@ async function churn_through_remindmes(client) {
   return;
 }
 
-async function churn_through_elections(client) {
+async function churn_through_elections(client, guild) {
+
+
+	const audit_log_channel = guild.channels.cache.get('1003166134838775818');
+
+	console.log('****************************');
+  console.log(`AUDIT_LOG_CHANNEL`);
+	console.log(audit_log_channel);
+	console.log('****************************');
+
   let outstanding_live_elections = await Elections.get_live();
   outstanding_live_elections = outstanding_live_elections.filter(election => election.begun === 0);
 
@@ -73,7 +86,7 @@ async function churn_through_elections(client) {
   console.log(outstanding_live_elections);
 
   for (let election of outstanding_live_elections) {
-    await Elections.update(election.id, { ...election, begun: 1 });
+    await Elections.update(election.role_name, { ...election, begun: 1 });
   }
 
   const outstanding_dead_elections = await Elections.get_dead();
@@ -81,7 +94,12 @@ async function churn_through_elections(client) {
   console.log(outstanding_dead_elections);
 
   for (let election of outstanding_dead_elections) {
-    await Elections.remove_by_id(election.id);    
+
+		const audit_log_entries = await Audit_Log_Entries.get_all();
+
+		await audit_log_channel.send(JSON.stringify(audit_log_entries));
+
+    await Elections.remove_by_role_name(election.role_name);   
   }
 }
 
@@ -150,7 +168,7 @@ async function refresh_users_and_roles(client, guild) {
 
 async function run_background_routine(client, guild) {
   refresh_users_and_roles(client, guild);
-  churn_through_elections(client);
+  churn_through_elections(client, guild);
   churn_through_remindmes(client);
 }
 
@@ -237,6 +255,12 @@ function to_date_and_msg(time_command) {
   }
 }
 
+const get_sha256_digest = operon => {
+	const hash = createHash('sha256');
+	hash.update(operon);
+	return hash.digest('hex');
+}
+
 module.exports = {
   unit_regex,
   confused_msg,
@@ -248,5 +272,6 @@ module.exports = {
   extract_info,
   to_standard_username,
   get_offset_in_minutes,
-  to_date_and_msg
+  to_date_and_msg,
+	get_sha256_digest
 };
