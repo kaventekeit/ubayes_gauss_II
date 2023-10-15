@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "New Gauss bot for the U of Bayes Discord server.",
   "main": "index.js",
+  "engines": {
+    "node":  "16.x"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "resetdb": "knex migrate:rollback && knex migrate:latest && knex seed:run",

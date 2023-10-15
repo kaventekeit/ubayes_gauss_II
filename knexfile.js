@@ -9,10 +9,10 @@ module.exports = {
     client: 'sqlite3',
     useNullAsDefault: true,
     migrations: {
-      directory: '/home/mack/maybe/gauss/ubayes_gauss_II/src/data/migrations',
+      directory: '/home/ubuntu/ubayes_gauss_II/src/data/migrations',
     },
     seeds: {
-      directory: '/home/mack/maybe/gauss/ubayes_gauss_II/src/data/seeds',
+      directory: '/home/ubuntu/ubayes_gauss_II/src/data/seeds',
     },
     pool: {
       afterCreate: (conn, done) => {
@@ -20,7 +20,7 @@ module.exports = {
       },
     },
     connection: {
-      filename: '/home/mack/maybe/gauss/ubayes_gauss_II/src/data/index.db'
+      filename: '/home/ubuntu/ubayes_gauss_II/src/data/index.db'
     }
   },
 

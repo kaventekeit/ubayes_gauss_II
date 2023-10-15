@@ -72,7 +72,7 @@ async function churn_through_remindmes(client) {
 async function churn_through_elections(client, guild) {
 
 
-	const audit_log_channel = guild.channels.cache.get('1003166134838775818');
+	const audit_log_channel = guild.channels.cache.get('713750633055780924');
 
 	console.log('****************************');
   console.log(`AUDIT_LOG_CHANNEL`);
@@ -176,7 +176,7 @@ async function run_background_routine(client, guild) {
 let schedule_checker;
 function check_schedule(client, guild) {
   if (!schedule_checker) {
-    schedule_checker = setInterval(() => run_background_routine(client, guild), 5000);
+    schedule_checker = setInterval(() => run_background_routine(client, guild), 20000);
   }
 }
 
