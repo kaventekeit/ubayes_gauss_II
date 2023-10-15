@@ -176,7 +176,7 @@ async function run_background_routine(client, guild) {
 let schedule_checker;
 function check_schedule(client, guild) {
   if (!schedule_checker) {
-    schedule_checker = setInterval(() => run_background_routine(client, guild), 5000);
+    schedule_checker = setInterval(() => run_background_routine(client, guild), 20000);
   }
 }
 
