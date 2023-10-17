@@ -1,0 +1,9 @@
+[[ Reminder comamnds ]]
+
+`remindme <datetime> <message . . .>`
+
+|| Sets a reminder for you - Gauss will message you with the given message at the given time and date
+
+`remindme <amount> <unit> <message . . .>`
+
+|| Sets a reminder for you - Gauss will message you with the given message after a certain amount of time has passed 

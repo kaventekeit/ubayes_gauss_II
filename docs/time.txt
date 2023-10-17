@@ -1,0 +1,18 @@
+[[ Time commands ]]
+
+`settimezone <timezone_name>`
+
+|| Sets your timezone
+
+`time now`
+
+|| Posts the current date and time in the configured timezone of the user.
+
+`time now <timezone>`
+
+|| Posts the current date and time in a given timezone.
+
+`time convert <datetime>`
+
+|| Convert a UTC [date and] time TO YOUR configured timezone
+

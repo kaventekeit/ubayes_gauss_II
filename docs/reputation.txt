@@ -1,0 +1,14 @@
+[[ Reputation commands ]]
+
+`leaderboard <month>`
+
+|| Shows the reputation point leaderboard for a given month [defaults to current month]
+
+`[givereputation/giverep] <member> <amount>`
+
+|| Give Bayes Points to another server member
+
+`getreputation <member - defaults to You>`
+
+|| Show the points total and current ranking of a user; if no user is passed, defaults to you
+

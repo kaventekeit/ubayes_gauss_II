@@ -1,0 +1,38 @@
+[[ Administrative commands ]]
+
+---
+
+`admin test`
+
+|| Tells you whether you have permission to use admin commands
+
+`admin addrole <role_id>`
+
+|| Adds server roles to the list of roles that have permission to use admin commands. <role_id> is expected to be the numerical ID of the role in Discord.
+
+`admin removerole <role_id>`
+
+|| Removes server roles ot the list of roles that have permission to use admin commands. <role_id> is expected to be the numerical ID of the role in Discord.
+
+`admin command listdisabled`
+
+|| Lists commands that are currently disabled on the server
+
+`admin command disable <command>`
+
+|| Disable a command for all users on the server
+
+`admin command enable <command>`
+
+|| Reenable a command for all users on the server
+
+-----
+
+V LOREC ISN'T SURE IF HE'S ENABLED YET V
+-----
+
+`admin welcome channel <channel_id>`
+
+|| Sets the channel where the welcome message will be posted. <channel_id> is expected to be the numerical ID of the channel in Discord
+
+
