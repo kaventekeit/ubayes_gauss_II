@@ -1,0 +1,9 @@
+[[ Election audit log ]]
+
+This log contains an entry for every action that changes the state of the election poll [except for, currently, election close], with a hash of the state both before the change and after the change [where applicable].
+
+Two hashes are sent to each user immediately after voting [each user can only vote once] - the hash of the *current* state of all candidates in the election, and the hash of the state of all candidates in the election after this user has voted. At the same time, the new hash is added to the audit log.
+ 
+The audit log is published at election close. If it's suspected that the number of votes associated with each candidate has been tampered with in a way that's not accounted for by each user voting no more than once, then all voters can publicly line up the hashes they received from Gauss and check that against the audit log, without publicly revealing who they voted for, to identify if and when any unaccounted-for changes might have happened.
+
+The bot will send a JSON representation of the full audit log data for every election, as it closes, in a specified channel on the server.

@@ -1,0 +1,13 @@
+[[ Send message commands ]]
+
+`send channel <channel_name> <message . . . >`
+
+|| Anonymously sends a message to a specified channel. <channel_name> is expected to be the displayed name of the channel you want to post in. After that you can specify your message text with spaces.
+
+`send dm <user_id> <message . . . >`
+
+|| Anonymously sends a message to a user via DM. <user_id> is expected to be the numerical ID of the user you want to send a message to in Discord. After that you can specify your message text with spaces.
+
+`send toggledms`
+
+|| Toggles Gauss's ability to anonymously send messages to you

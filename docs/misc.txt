@@ -1,0 +1,9 @@
+[[ Miscellaneous commands ]]
+
+`docs`
+
+|| Returns a link to Gauss's docs index.
+
+`privacy`
+
+|| [UNIMPLEMENTED AS OF YET]

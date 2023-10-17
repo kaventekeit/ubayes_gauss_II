@@ -1,0 +1,9 @@
+[[ Election commands ]]
+
+`election create <title> <how_many_of_these_are_we_electing> <start_date> <end_date> <candidate_names . . .>`
+
+|| Admins can use this command to create / schedule a new election poll
+
+`election vote <role_name> <candidates to approve . . . >
+
+|| Approval vote. You can approve just one candidate or all of them - or any number in between. Gauss will message you and ask you to confirm your vote
