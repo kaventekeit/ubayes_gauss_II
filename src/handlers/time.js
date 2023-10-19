@@ -28,7 +28,7 @@ async function time_handler(client, message) {
     return;
   } else if ((command.length === 2 && get_offset_in_minutes(command[1]) !== 'invalid timezone!')
             || (command.length === 3 && command[1] === 'now' && get_offset_in_minutes(command[2]) !== 'invalid timezone!')) {
-    command_data = await commands.get_by_command_name('time_convert');
+    command_data = await Commands.get_by_command_name('time_convert');
     if (!command_data.enabled) {
       await channel.send(disabled_msg);
       return;
@@ -42,7 +42,7 @@ async function time_handler(client, message) {
     return;
     
   } else if (command.length === 3 && command[1] === 'set') {
-    command_data = await commands.get_by_command_name('time_set');
+    command_data = await Commands.get_by_command_name('time_set');
     if (!command_data.enabled) {  
       await channel.send(disabled_msg);
       return;
@@ -58,7 +58,7 @@ async function time_handler(client, message) {
     /* if we just have 'convert' [time] we want to convert to utc */
     /* otherwise we want to convert to the timezone after 'to' */
 
-    command_data = await commands.get_by_command_name('time_convert');
+    command_data = await Commands.get_by_command_name('time_convert');
     if (!command_data.enabled) {
       await channel.send(disabled_msg);
       return;
