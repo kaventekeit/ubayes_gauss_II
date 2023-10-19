@@ -53,6 +53,10 @@ const {
   has_admin
 } = require('./utils');
 
+
+const welcome_regex = /mee{0,1}t Gauss/i;
+const thank_you_regex = /thank(s| you)/i;
+
 /*
 
 		TODO:
@@ -69,6 +73,9 @@ client.once('ready', async () => {
 });
 
 client.on('messageCreate', async (message) => {
+  if (message.author.id === client.user.id) {
+    return;
+  }
   if (message.author.id != client.user.id && !initial_db_fill_done) {
     const guild = await initial_db_fill(message);
     clearInterval(schedule_checker);
@@ -76,9 +83,6 @@ client.on('messageCreate', async (message) => {
     check_schedule(client, guild);
     await message.channel.send(`I have initialized with data from ${guild}!`);
     initial_db_fill_done = 1;
-  }
-  if (message.author.id === client.user.id) {
-    return;
   }
   const message_user_id = user_id(message);
   console.log(`message_user_id: ${message_user_id}`);
@@ -90,12 +94,10 @@ client.on('messageCreate', async (message) => {
   const command = message.content.split(' ');
   const all_commands = await Commands.get_all();
 
-  const welcome_regex = /mee{0,1}t Gauss/i;
   if (welcome_regex.test(message.content)) {
     await channel.send(welcome_message);
   }
 
-  const thank_you_regex = /xhank(s| you)/i;
   if (thank_you_regex.test(message.content)) {
     console.log(message.mentions.users);
     message.mentions.users.each(async(user) => {
