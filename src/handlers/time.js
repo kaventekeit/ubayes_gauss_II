@@ -8,6 +8,8 @@ const {
 	date_to_epoch_ms
 } = require('../utils/basic_utils');
 
+const Commands = require('../models/commands');
+
 const disabled_msg = 'That command is disabled.';
 const date_format_explanation = "Please format dates like: 'YYYY-MM-DDTHH:MM:SS'.";
 
@@ -16,7 +18,7 @@ async function time_handler(client, message) {
   let command_data;
 
   if (command.length === 1 || command[1] === 'now') {
-    command_data = await commands.get_by_command_name('time_now');
+    command_data = await Commands.get_by_command_name('time_now');
     if (!command_data.enabled) {
       await channel.send(disabled_msg);
       return;
