@@ -37,7 +37,7 @@ async function time_handler(client, message) {
     const now_date = new date();
     const utc_mils = date_to_epoch_ms(now_date);
     const offset_mils = utc_mils + offset_in_ms;
-    const offset_date = new date(offset_mils).tostring();
+    const offset_date = new date(offset_mils).toString();
     await channel.send(offset_date);
     return;
     
@@ -63,9 +63,9 @@ async function time_handler(client, message) {
       await channel.send(disabled_msg);
       return;
     }
-    if (command.indexof('to') === -1) {
+    if (command.indexOf('to') === -1) {
       try {
-        const now = new date(command[2]).tolocalestring('en-us', { timezone: 'utc' });  // we don't wanna assume how they're specifiying tz in their dates lol
+        const now = new Date(command[2]).toLocaleString('en-us', { timeZone: 'utc' });  // we don't wanna assume how they're specifiying tz in their dates lol
         await channel.send(now);
         return;
       } catch (err) {
@@ -74,16 +74,16 @@ async function time_handler(client, message) {
       }
     } else {
       if (command.length === 5) { // converting from utc to some specified timezone
-        const target_timezone = command.slice(command.indexof('to')+1);
+        const target_timezone = command.slice(command.indexOf('to')+1);
         const valid_timezone_tester = get_offset_in_minutes(target_timezone);
         if (!offset) {
           await channel.send("sorry, i don't recognize that timezone.");
           return;
         }
         try {
-          let date_to_convert = new date(command[2]);
+          let date_to_convert = new Date(command[2]);
           date_to_convert = date_to_epoch_ms(date_to_convert);
-          const new_date = new date(date_to_convert).tolocalestring('en-us', { timezone: target_timezone });  // remember, here we're assuming we're starting from utc, or at least a tz the user specified **within** their date so we have the correct ms info in our date object
+          const new_date = new Date(date_to_convert).toLocaleString('en-us', { timeZone: target_timezone });  // remember, here we're assuming we're starting from utc, or at least a tz the user specified **within** their date so we have the correct ms info in our date object
           await channel.send(new_date); 
           return;
         } catch (err) {
@@ -99,7 +99,7 @@ async function time_handler(client, message) {
         }
         base_offset *= (60 * 1000);
         try {
-          let date_to_convert = new date(command[2]);
+          let date_to_convert = new Date(command[2]);
           date_to_convert = date_to_epoch_ms(date_to_convert);
           date_to_convert -= base_offset;                     // we make our ms info for our base date include info about the base timezone!
           const target_timezone = command[5];
@@ -108,7 +108,7 @@ async function time_handler(client, message) {
             await channel.send("sorry, i don't recognize that timezone.");  
             return;
           }
-          const converted_date = new date(date_to_convert).tolocalestring('en-us', { timezone: target_timezone });  // voilã€!
+          const converted_date = new Date(date_to_convert).toLocaleString('en-us', { timeZone: target_timezone });  // voilã€!
           await channel.send(converted_date);
           return;
         } catch (err) {
