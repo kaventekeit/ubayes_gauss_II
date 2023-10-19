@@ -9,6 +9,7 @@ const {
 } = require('../utils/basic_utils');
 
 const Commands = require('../models/commands');
+const Users = require('../models/users');
 
 const disabled_msg = 'That command is disabled.';
 const date_format_explanation = "Please format dates like: 'YYYY-MM-DDTHH:MM:SS'.";
@@ -52,7 +53,7 @@ async function time_handler(client, message) {
       await channel.send("sorry, i don't recognize that timezone.");
       return;
     }
-    await users.update(user_identifier,{ utc_offset: offset });
+    await Users.update(user_identifier,{ utc_offset: offset });
     return;
   } else if (command[1] === 'convert') {
     /* if we just have 'convert' [time] we want to convert to utc */
