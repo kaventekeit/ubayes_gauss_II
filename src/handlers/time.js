@@ -23,7 +23,7 @@ async function time_handler(client, message) {
       await channel.send(disabled_msg);
       return;
     }
-    const now = new date().tostring();
+    const now = new Date().toString();
     await channel.send(now);
     return;
   } else if ((command.length === 2 && get_offset_in_minutes(command[1]) !== 'invalid timezone!')
@@ -34,10 +34,10 @@ async function time_handler(client, message) {
       return;
     }
     const offset_in_ms = get_offset_in_minutes(command.length===2?command[1]:command[2]) * 60 * 1000;
-    const now_date = new date();
+    const now_date = new Date();
     const utc_mils = date_to_epoch_ms(now_date);
     const offset_mils = utc_mils + offset_in_ms;
-    const offset_date = new date(offset_mils).toString();
+    const offset_date = new Date(offset_mils).toString();
     await channel.send(offset_date);
     return;
     
