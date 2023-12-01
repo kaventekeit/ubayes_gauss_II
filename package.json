@@ -4,7 +4,7 @@
   "description": "New Gauss bot for the U of Bayes Discord server.",
   "main": "index.js",
   "engines": {
-    "node":  "16.x"
+    "node": "16.x"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -23,12 +23,13 @@
   },
   "homepage": "https://github.com/mack-gallagher/gauss#readme",
   "dependencies": {
+    "chrono-node": "^2.7.3",
     "discord.js": "^14.1.2",
     "knex": "^2.2.0",
     "sqlite3": "^5.1.6"
   },
   "devDependencies": {
     "eslint": "^8.50.0",
-    "nodemon": "^2.0.19"
+    "nodemon": "^2.0.22"
   }
 }
