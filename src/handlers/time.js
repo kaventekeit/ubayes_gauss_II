@@ -91,7 +91,6 @@ async function time_handler(client, message) {
 													.slice(0,5)
 													.join(' ')+' '+timezone_part_of_command;
 
-		await channel.send(timezone_part_of_command);
 		await channel.send(new_date);
 	
     return;

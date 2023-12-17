@@ -63,6 +63,7 @@ async function is_admin(message) {
     return 1;
   }
   const me = await Users.get_by_id(message.member.id);
+  if (!me) return 0;
   if (me.admin) {
     return 1;
   }
