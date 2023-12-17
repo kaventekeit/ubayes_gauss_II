@@ -103,7 +103,7 @@ client.on('messageCreate', async (message) => {
     message.mentions.users.each(async(user) => {
       const member = await message.guild.members.fetch(user.id);
       const existing_user = await Users.get_by_id(member.id);
-      await Users.update(member.id, { reputation: existing_user.reputation + 1 });
+      await Users.update(member.id, { reputation: existing_user.reputation?(existing_user.reputation + 1):0 });
       await channel.send(`Awarded 1 Bayes point to ${member.displayName}`);
     });
   }
